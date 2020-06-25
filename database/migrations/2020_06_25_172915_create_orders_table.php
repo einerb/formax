@@ -14,7 +14,6 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->id();
             $table->uuid('id')->unique();
             $table->string('channel');
             $table->enum('state', array('Reservada', 'Pendiente', 'En tránsito', 'Listo para recoger', 'Cerrada', 'Cancelada'));
@@ -22,7 +21,8 @@ class CreateOrdersTable extends Migration
             $table->integer('discount');
             $table->enum('delivery', array('Estándar', 'Express'));
             $table->enum('dispatch', array('Entrega en tienda', 'Entrega en domicilio'));
-            $table->string('items', []);
+            $table->bigInteger('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

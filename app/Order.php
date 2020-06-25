@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Product;
 
 class Order extends Model
 {
@@ -14,6 +15,10 @@ class Order extends Model
         'discount',
         'delivery',
         'dispatch',
-        'items',
+        'product_id',
     ];
+
+    public function product(){
+        return $this->hasMany(Product::class);
+    }
 }
