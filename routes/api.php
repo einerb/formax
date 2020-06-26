@@ -18,20 +18,23 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 }); */
 
-// GET
-Route::get('products', 'ProductController@index');
-Route::get('orders', 'OrderController@index');
-Route::get('products/{id}', 'ProductController@show');
-Route::get('orders/{id}', 'OrderController@show');
 
-// POST
-Route::post('products', 'ProductController@store');
-Route::post('orders', 'OrderController@store');
+Route::group(["middleware"=> "apikey.validate"], function () {
+    // GET
+    Route::get('products', 'ProductController@index');
+    Route::get('orders', 'OrderController@index');
+    Route::get('products/{id}', 'ProductController@show');
+    Route::get('orders/{id}', 'OrderController@show');
 
-// PUT
-Route::put('products/update/{id}', 'ProductController@update');
-Route::put('orders/update/{id}', 'OrderController@update');
+    // POST
+    Route::post('products', 'ProductController@store');
+    Route::post('orders', 'OrderController@store');
 
-// DELETE
-Route::delete('products/remove/{id}', 'ProductController@destroy');
-Route::delete('orders/remove/{id}', 'OrderController@destroy');
+    // PUT
+    Route::put('products/update/{id}', 'ProductController@update');
+    Route::put('orders/update/{id}', 'OrderController@update');
+
+    // DELETE
+    Route::delete('products/remove/{id}', 'ProductController@destroy');
+    Route::delete('orders/remove/{id}', 'OrderController@destroy');
+});
