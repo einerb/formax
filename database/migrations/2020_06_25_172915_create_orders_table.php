@@ -14,15 +14,14 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->uuid('id')->unique();
+            $table->id();
+            $table->string('order')->unique();
             $table->string('channel');
-            $table->enum('state', array('Reservada', 'Pendiente', 'En tránsito', 'Listo para recoger', 'Cerrada', 'Cancelada'));
+            $table->enum('state', ['reservada', 'pendiente', 'en transito', 'recoger', 'cerrada', 'cancelada']);
             $table->double('value');
             $table->integer('discount');
-            $table->enum('delivery', array('Estándar', 'Express'));
-            $table->enum('dispatch', array('Entrega en tienda', 'Entrega en domicilio'));
-            $table->bigInteger('product_id')->unsigned();
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->onUpdate('cascade');
+            $table->enum('delivery', ['estandar', 'express']);
+            $table->enum('dispatch', ['tienda', 'domicilio']);
             $table->timestamps();
         });
     }

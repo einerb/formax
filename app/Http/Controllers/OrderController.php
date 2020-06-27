@@ -3,18 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 use Exception;
 use Validator;
 
 use App\Order;
+use App\Product;
+use App\OrderProduct;
 
 class OrderController extends Controller
 {
     public function index()
     {
         try {
-            $orders = Order::all();
+            $orders = Order::orderBy('updated_at','DESC')->get();
 
             $response = [
                 'success' => true,
@@ -32,12 +36,11 @@ class OrderController extends Controller
     {
         $v = Validator::make($request->all(), [
             'channel' => 'required|string',
-            'state' => 'required|string',
+            'state' => Rule::in(['reservada', 'pendiente', 'transito', 'recoger', 'cerrada', 'cancelada']),
             'value' => 'required',
             'discount' => 'required|integer',
-            'delivery' => 'required|string',
-            'dispatch' => 'required|string',
-            'product_id' => 'required|integer'
+            'delivery' => Rule::in(['estandar', 'express']),
+            'dispatch' => Rule::in(['tienda', 'domicilio'])
         ]);
 
         if ($v->fails()) {
@@ -46,16 +49,16 @@ class OrderController extends Controller
 
         try {
             $order = new Order([
+                'order'=>  Str::random(10),
                 'channel' =>  $request->channel,
                 'state' =>  $request->state,
                 'value' =>  $request->value,
                 'discount' =>  $request->discount,
                 'delivery' =>  $request->delivery,
                 'dispatch' =>  $request->dispatch,
-                'product_id' =>  $request->product_id,
             ]);
             $order->save();
-
+            
             $response = [
                 'success' => true,
                 'data' => $order,
@@ -71,10 +74,31 @@ class OrderController extends Controller
     public function show($id)
     {
         try {
-            $order = Order::find($id);
+            $order = Order::with('product')->where('id', $id)->get();
 
             if (!$order) {
-                return response()->json('order not found!');
+                return response()->json('Order not found!');
+            }
+
+            $response = [
+                'success' => true,
+                'data' => $order,
+                'message' => 'Successful order listing!'
+            ];
+
+            return response()->json($response, 200);
+        } catch (Exception $e) {
+            return response()->json('Error: ' . $e->getMessage());
+        }
+    }
+
+    public function showProductsByOrder($id)
+    {
+        try {
+            $order = Order::join('products', 'orders.product_id', '=', 'products.id')->where('orders.order', $id)->orderBy('updated_at', 'desc')->get();
+
+            if (!$order) {
+                return response()->json('Order not found!');
             }
 
             $response = [

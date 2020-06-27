@@ -23,7 +23,7 @@ class ApiKeyValidate
         }
       
         if ($request->has("api_key")) {
-            $api_key = "TeshOu4i2WUDGa";
+            $api_key = "ZxwNWzyogRMMgDNHeGNbaBQFXuGCbv4m7lPPlYct91sO3DUNkw";
             if ($request->input("api_key") != $api_key) {
                 return response()->json([
                 'status' => 401,

@@ -21,17 +21,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(["middleware"=> "apikey.validate"], function () {
     // GET
-    Route::get('products', 'ProductController@index');
     Route::get('orders', 'OrderController@index');
-    Route::get('products/{id}', 'ProductController@show');
     Route::get('orders/{id}', 'OrderController@show');
+    Route::get('orders/products/{id}', 'OrderController@showProductsByOrder');
 
     // POST
     Route::post('products', 'ProductController@store');
-    Route::post('orders', 'OrderController@store');
+    Route::post('orders', 'OrderController@store');    
 
     // PUT
-    Route::put('products/update/{id}', 'ProductController@update');
     Route::put('orders/update/{id}', 'OrderController@update');
 
     // DELETE
