@@ -18,7 +18,7 @@ class OrderController extends Controller
     public function index()
     {
         try {
-            $orders = Order::orderBy('updated_at','DESC')->get();
+            $orders = Order::orderBy('updated_at', 'DESC')->get();
 
             $response = [
                 'success' => true,
@@ -62,6 +62,7 @@ class OrderController extends Controller
             $response = [
                 'success' => true,
                 'data' => $order,
+                'id'=> $order->id,
                 'message' => 'Successfully created order!'
             ];
 
