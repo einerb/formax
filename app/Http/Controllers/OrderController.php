@@ -48,11 +48,15 @@ class OrderController extends Controller
         }
 
         try {
+            $percent = $request->discount / 100;
+            $discount = $request->value * $percent;
+            $value_total =  $request->value - $discount;
+
             $order = new Order([
                 'order'=>  Str::random(10),
                 'channel' =>  $request->channel,
                 'state' =>  $request->state,
-                'value' =>  $request->value,
+                'value' =>  $value_total,
                 'discount' =>  $request->discount,
                 'delivery' =>  $request->delivery,
                 'dispatch' =>  $request->dispatch,

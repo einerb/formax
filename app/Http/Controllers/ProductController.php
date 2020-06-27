@@ -9,6 +9,7 @@ use Validator;
 
 use App\Product;
 use App\OrderProduct;
+use App\Order;
 
 class ProductController extends Controller
 {
@@ -27,6 +28,8 @@ class ProductController extends Controller
         }
 
         try {
+            $price_total = $request->price * $request->quantity;
+
             $product = new Product([
                 'sku' =>  $request->sku,
                 'name'     => $request->name,
@@ -41,6 +44,10 @@ class ProductController extends Controller
                 'product_id'=>$product->id
             ]);
             $order_product->save();
+
+            $order = Order::find($request->order_id);
+            $order->value    = $order->value + $price_total;
+            $order->save();
 
             $response = [
                 'success' => true,
